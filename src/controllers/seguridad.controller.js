@@ -3,10 +3,10 @@ const {pool} = require('../database.js');
 class SeguridadController extends GenericController{
 	async getAll(req,res,model){
 		try{
-			res.status(200).json({message:"Wellcome to app_sereno",data:"data is empty"})
+			res.status(200).json({message:'Wellcome to app_sereno',data:'data is empty'})
 		}catch(err){
 			console.error(err);
-			res.status(500).json({message:"Internal Error",data:err});
+			res.status(500).json({message:'Internal Error',data:err});
 		}
 	}
 
@@ -16,7 +16,7 @@ class SeguridadController extends GenericController{
 			res.status(200).json({data:temp.rows});
 		}catch(err){
 			console.error(err);
-			res.status(500).json({message:"Internal Error",data:err});
+			res.status(500).json({message:'Internal Error',data:err});
 		}
 
 	}
