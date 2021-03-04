@@ -8,18 +8,24 @@ const seg = new SeguridadController();
 
 /**
  * @swagger
- * /seguridad:
+ * /api/seguridad:
  *   get:
  *     summary: Retrieve a welcome message.
  *     description: Retrieve a welcome message for testing app_sereno
+ *     responses:
+ *       '200':
+ *         description: A successful response.
 */
 router.get('/',(req,resp)=>seg.getAll(req,resp,null));
 /**
  * @swagger
- * /seguridad/testingdb:
+ * /api/seguridad/testingdb:
  *   get:
  *     summary: Retrieve an object from database query.
- *     description: Retrieve an object from database query for testing database connection
+ *     description: Retrieve an object from database query for testing database connection.
+ *     responses:
+ *       '200':
+ *         description: A successful response.
 */
 router.get('/testingdb',(req,resp)=>seg.testingDB(req,resp,null));
 router.get('/:id',(req,resp)=>seg.getById(req,resp,null));
