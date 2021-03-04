@@ -7,6 +7,10 @@ const swaggerDefinition = {
     title: 'Express API for app_sereno',
     version: '1.0.0',
   },
+  servers:[{
+  	url:'http://localhost:3000',
+  	description:'Development server',
+  },]
 };
 
 const swaggerOption={

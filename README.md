@@ -28,3 +28,7 @@ npm run docs
 ```
 http://localhost:3000
 ```
+### Postman methods
+```
+https://www.getpostman.com/collections/2b1e3cd3c429ee8aa4b3
+```
