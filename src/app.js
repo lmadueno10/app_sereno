@@ -14,6 +14,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname,'public')));
 
 app.use('/api/seguridad',require('./routers/seguridad.router'));
+app.use('/api/auth',require('./routers/auth.routes'));
 app.use('/',swagerUiServe,swaggerUiSetUp);
 
 module.exports= app;

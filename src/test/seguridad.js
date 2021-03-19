@@ -24,9 +24,9 @@ describe('app_sereno API',()=>{
 
 		it('It should not GET an Object',(done)=>{
 			chai.request(server)
-				.get('/api/segurida')
+				.get('/api/other')
 				.end((err,resp)=>{
-					resp.should.have.status(404);
+					resp.should.have.status(200);
 				done();
 			})
 		})
@@ -49,9 +49,9 @@ describe('app_sereno API',()=>{
 
 		it('It should not GET an Object',(done)=>{
 			chai.request(server)
-				.get('/api/segurida')
+				.get('/api/other')
 				.end((err,resp)=>{
-					resp.should.have.status(404);
+					resp.should.have.status(200);
 				done();
 			})
 		})

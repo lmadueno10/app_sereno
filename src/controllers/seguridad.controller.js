@@ -28,7 +28,7 @@ class SeguridadController extends GenericController{
 	 */
 	async testingDB(req,res,model){
 		try{
-			const temp = await pool.query("SELECT ST_AsGeoJSON(ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)')));");
+			const temp = await pool.query(`SELECT ST_AsGeoJSON(ST_MakePolygon( ST_GeomFromText('LINESTRING(75 29,77 29,77 29, 75 29)')));`);
 			res.status(200).json({data:temp.rows});
 		}catch(err){
 			console.error(err);

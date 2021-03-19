@@ -27,7 +27,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "mocha src/test/",
+    "test": "mocha src/test/*.js",
     "docs":"jsdoc -c jsdoc.json"
   },
   "keywords": [],
