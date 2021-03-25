@@ -10,7 +10,12 @@ const swaggerDefinition = {
   servers:[{
   	url:'http://localhost:3000',
   	description:'Development server',
-  },]
+  },
+  {
+    url:'https://app-sereno.herokuapp.com/',
+    description:'Demo server',
+  },
+  ]
 };
 
 const swaggerOption={
