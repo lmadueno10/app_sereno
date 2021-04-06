@@ -45,7 +45,7 @@ class Usuario{
 	 * @returns {JSONObject}
 	 */
 	static async getUserByUserName(userName){
-			const queryResult = await pool.query(`select id, usuario, nombres_apellidos,contrasena, profile_id from v_usuarios where usuario =$1`,[userName]);
+			const queryResult = await pool.query(`select * from v_usuarios where usuario =$1`,[userName]);
 			if(queryResult){
 				const userFound=queryResult.rows[0];
 				if(userFound){
