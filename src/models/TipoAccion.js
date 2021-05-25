@@ -1,35 +1,19 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
 /**
- * Class representing Usuario Model.
+ * Class representing TipoAccion Model.
  *
  * @class
  */
-class Usuario {
+class TipoAccion {
 
-	/**
-	 * @param {string} password string
-	 * 
-	 */
-	static encryptPassword = async (password) => {
-		const salt = await bcrypt.genSalt(10)
-		return await bcrypt.hash(password, salt)
-	}
-	/**
-	 * @param {string} password string
-	 * @param {string} password2 string
-	 * @returns {boolean}
-	 */
-	static comparePassword = async (password, password2) => {
-		return await bcrypt.compare(password, password2);
-	}
 	/**
 	 * 
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-		const queryResult = await pool.query(`select u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.estado from usuario u 
-		left join personal_campo p on u.id_usuario=p.id_usuario where id_personal is null;`,[]);
+        const query=`select * from tipo_accion order by 2`
+		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
@@ -47,11 +31,10 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`select * from tipo_accion where id_tipo_accion =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
-				result.contrasenia=undefined;
 				return result;
 			} else {
 				return undefined;
@@ -61,33 +44,16 @@ class Usuario {
 		}
 	}
 
+	
 	/**
-	 * @param {string} username string
+	 * @param {JSONObject} tipoAccion
 	 * @returns {JSONObject}
 	 */
-	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`select * from usuario where usuario =$1`, [userName]);
-		if (queryResult) {
-			const userFound = queryResult.rows[0];
-			if (userFound) {
-				return userFound;
-			} else {
-				return undefined;
-			}
-		} else {
-			return undefined;
-		}
-	}
-
-	/**
-	 * @param {JSONObject} usuario
-	 * @returns {JSONObject}
-	 */
-	static async create(usuario) {
-		usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'INSERT INTO usuario(';
+     static async create(tipoAccion) {
+		
+		const keys = Object.keys(tipoAccion);
+		const values = Object.values(tipoAccion);
+		let query = 'INSERT INTO tipo_accion(';
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -112,34 +78,30 @@ class Usuario {
 		}
 	}
 
+
 	/**
 	 * 
-	 * @param {JSONObject} usuario 
+	 * @param {JSONObject} tipoAccion 
 	 * @param {Number} id 
 	 * @returns JSONObject
 	 */
-	static async update(usuario, id) {
-		
-		if (usuario.contrasenia) {
-			usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		}
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'UPDATE usuario SET ';
+	static async update(tipoAccion, id) {
+		const keys = Object.keys(tipoAccion);
+		const values = Object.values(tipoAccion);
+		let query = 'UPDATE tipo_accion SET ';
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
 			index++;
 		})
 		query = query.substr(0, query.length - 2);
-		query += ` WHERE id_usuario=$${index + 1} RETURNING *;`;
+		query += ` WHERE id_tipo_accion=$${index + 1} RETURNING *;`;
 		values.push(id);
-		
+		console.log(query)
 		const queryResult = await pool.query(query, values);
 		if (queryResult) {
 			const result = queryResult.rows[0];
 			if (result) {
-				result.contrasenia=undefined;
 				return { data: result };
 			} else {
 				return { data: undefined, message: 'No data retruned' };
@@ -154,11 +116,10 @@ class Usuario {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from tipo_accion where id_tipo_accion =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
-				result.contrasenia=undefined;
 				return result;
 			} else {
 				return undefined;
@@ -170,4 +131,4 @@ class Usuario {
 }
 
 
-module.exports = Usuario;
+module.exports = TipoAccion;

@@ -1,12 +1,13 @@
 const jwt= require('jsonwebtoken');
 const {pool} = require('../database.js');
 const Usuario =require('../models/Usuario');
+const GenericController = require('./generic/generic.controller.js');
 /**
  * Class representing Controller.
  *
  * @class
  */
-class UsuarioController{
+class UsuarioController extends GenericController{
 
 	async createView(req,res){
 		try{
@@ -31,7 +32,6 @@ class UsuarioController{
 			res.status(500).json({message:'Internal Error',data:err});
 		}
 	}
-	
 }
 
 module.exports=UsuarioController;

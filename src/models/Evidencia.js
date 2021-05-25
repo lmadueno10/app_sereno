@@ -1,35 +1,18 @@
-const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
 /**
- * Class representing Usuario Model.
+ * Class representing Evidencia Model.
  *
  * @class
  */
-class Usuario {
+class Evidencia {
 
-	/**
-	 * @param {string} password string
-	 * 
-	 */
-	static encryptPassword = async (password) => {
-		const salt = await bcrypt.genSalt(10)
-		return await bcrypt.hash(password, salt)
-	}
-	/**
-	 * @param {string} password string
-	 * @param {string} password2 string
-	 * @returns {boolean}
-	 */
-	static comparePassword = async (password, password2) => {
-		return await bcrypt.compare(password, password2);
-	}
 	/**
 	 * 
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-		const queryResult = await pool.query(`select u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.estado from usuario u 
-		left join personal_campo p on u.id_usuario=p.id_usuario where id_personal is null;`,[]);
+        const query=`select * from evidencia`
+		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
@@ -47,11 +30,10 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`select * from evidencia where id_evidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
-				result.contrasenia=undefined;
 				return result;
 			} else {
 				return undefined;
@@ -62,15 +44,15 @@ class Usuario {
 	}
 
 	/**
-	 * @param {string} username string
+	 * @param {Number} id Number
 	 * @returns {JSONObject}
 	 */
-	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`select * from usuario where usuario =$1`, [userName]);
+	static async getEvidenciasByIdIncidencia(id) {
+		const queryResult = await pool.query(`select * from evidencia where id_incidencia = $1`, [id]);
 		if (queryResult) {
-			const userFound = queryResult.rows[0];
-			if (userFound) {
-				return userFound;
+			const result = queryResult.rows[0];
+			if (result) {
+				return result;
 			} else {
 				return undefined;
 			}
@@ -80,14 +62,14 @@ class Usuario {
 	}
 
 	/**
-	 * @param {JSONObject} usuario
+	 * @param {JSONObject} Evidencia
 	 * @returns {JSONObject}
 	 */
-	static async create(usuario) {
-		usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'INSERT INTO usuario(';
+     static async create(evidencia) {
+		
+		const keys = Object.keys(evidencia);
+		const values = Object.values(evidencia);
+		let query = 'INSERT INTO evidencia(';
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -114,25 +96,22 @@ class Usuario {
 
 	/**
 	 * 
-	 * @param {JSONObject} usuario 
+	 * @param {JSONObject} Evidencia 
 	 * @param {Number} id 
 	 * @returns JSONObject
 	 */
-	static async update(usuario, id) {
-		
-		if (usuario.contrasenia) {
-			usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		}
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'UPDATE usuario SET ';
+     static async update(evidencia, id) {
+
+		const keys = Object.keys(evidencia);
+		const values = Object.values(evidencia);
+		let query = 'UPDATE evidencia SET ';
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
 			index++;
 		})
 		query = query.substr(0, query.length - 2);
-		query += ` WHERE id_usuario=$${index + 1} RETURNING *;`;
+		query += ` WHERE id_evidencia=$${index + 1} RETURNING *;`;
 		values.push(id);
 		
 		const queryResult = await pool.query(query, values);
@@ -154,11 +133,10 @@ class Usuario {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from evidencia where id_evidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
-				result.contrasenia=undefined;
 				return result;
 			} else {
 				return undefined;
@@ -170,4 +148,4 @@ class Usuario {
 }
 
 
-module.exports = Usuario;
+module.exports = Evidencia;

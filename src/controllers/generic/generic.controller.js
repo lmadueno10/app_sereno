@@ -10,12 +10,18 @@ class GenericController{
 	 * @param {String} name (Optional)
 	 * @returns {JSONObject}
 	 */
-	async create(req,res,model,name){
-		try{
-			res.status(201).json({message:`${name} created`,data:'Data is empty'})
-		}catch(err){	
-			res.status(500).json({message:'Internal Error try again.'})
-		}
+	async create(req,res,model){
+		//try{
+			const resp=await model.create(req.body);
+			if(resp.data){
+				res.status(201).json({code:201,data:resp.data});
+			}else{
+				res.status(200).json({code:400,data:resp.data});
+			}
+			
+		//}catch(err){	
+		//	res.status(500).json({code:500,data:err});
+		//}
 
 	}
 	/**
@@ -26,7 +32,12 @@ class GenericController{
 	 */
 	async getAll(req,res,model){
 		try{
-			res.status(200).json({message:'Wellcome to app_sereno'})
+			const resp =await model.getAll();
+			if(resp){
+				res.status(200).json({data:resp});
+			}else{
+				res.status(404).json({});
+			}
 		}catch(err){
 			res.status(500).json({message:'Internal Error',data:err});
 		}
@@ -39,7 +50,12 @@ class GenericController{
 	 */
 	async getById(req,res,model){
 		try{
-			res.status(200).json({data:'data is empty'});
+			const resp=await model.getById(req.params.id);
+			if(resp){
+				res.status(200).json({data:resp});
+			}else{
+				res.status(404).json({});
+			}
 		}catch(err){
 			res.status(500).json({message:'Internal Error',data:err});
 		}
@@ -51,11 +67,17 @@ class GenericController{
 	 * @param {String} name (Optional)
 	 * @returns {JSONObject}
 	 */
-	async update(req,res,model,name){
+	async update(req,res,model){
 		try{
-			res.status(200).json({message:`${name} Updated`,code:200,data:updateModel})
-		}catch(err){
-			res.status(500).json({message:'Internal error',data:err});
+			const resp=await model.update(req.body,req.params.id);
+			if(resp.data){
+				res.status(201).json({code:201,data:resp.data});
+			}else{
+				res.status(200).json({code:400,data:resp.data});
+			}
+			
+		}catch(err){	
+			res.status(500).json({code:500,data:err});
 		}
 	}
 	/**
@@ -63,15 +85,19 @@ class GenericController{
 	 * @param {object} res HttpResponse Object
 	 * @param {object} model (Optional)
 	 * @param {String} name (Optional)
-	 * @returns {JSONObject}
+	 * @returns {Object}
 	 */
 	async delete(req,res,model,name){
-		try{
-			
-			res.json({message:`${name} Eliminado`,code:200});
-		}catch(err){
-			res.status(500).json({message:'Internal Error',data:err});
-		}
+		//try{
+			const resp=await model.delete(req.params.id);
+			if(res.data){
+				res.json({message:`${name} Eliminado`,code:200});
+			}else{
+				res.status(204).json({});
+			}
+		//}catch(err){
+		//	res.status(500).json({message:'Internal Error',data:err});
+		//}
 	}
 }
 

@@ -10,6 +10,7 @@ const ac=new AuthController();
  * /api/auth/signin:
  *   post:
  *     summary: Refresh-token and access-token
+ *     tags: [Auth]
  *     requestBody:
  *       content:
  *         application/json:
@@ -33,6 +34,7 @@ router.post('/signin',ac.signIn);
  * /api/auth/refresh-token:
  *   post:
  *     summary: Generate a new access-token
+ *     tags: [Auth]
  *     requestBody:
  *       content:
  *         application/json:
@@ -48,6 +50,7 @@ router.post('/signin',ac.signIn);
  *         description: OK
 */
 router.post('/refresh-token',ac.refreshToken);
+router.post('/signin-personal',ac.signInPersonal);
 router.get('/createview',uc.createView);
 
 module.exports=router;

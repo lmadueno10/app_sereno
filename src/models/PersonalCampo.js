@@ -1,11 +1,11 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
 /**
- * Class representing Usuario Model.
+ * Class representing PersonalCampo Model.
  *
  * @class
  */
-class Usuario {
+class PersonalCampo {
 
 	/**
 	 * @param {string} password string
@@ -28,8 +28,7 @@ class Usuario {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-		const queryResult = await pool.query(`select u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.estado from usuario u 
-		left join personal_campo p on u.id_usuario=p.id_usuario where id_personal is null;`,[]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario ORDER BY 1 DESC LIMIT 200`,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
@@ -47,7 +46,7 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario WHERE pc.id_personal =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -66,7 +65,7 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`select * from usuario where usuario =$1`, [userName]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario WHERE u.usuario =$1`, [userName]);
 		if (queryResult) {
 			const userFound = queryResult.rows[0];
 			if (userFound) {
@@ -80,14 +79,14 @@ class Usuario {
 	}
 
 	/**
-	 * @param {JSONObject} usuario
+	 * @param {JSONObject} PersonalCampo
 	 * @returns {JSONObject}
 	 */
-	static async create(usuario) {
-		usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'INSERT INTO usuario(';
+	static async create(PersonalCampo) {
+		
+		const keys = Object.keys(PersonalCampo);
+		const values = Object.values(PersonalCampo);
+		let query = 'INSERT INTO personal_campo(';
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -114,25 +113,22 @@ class Usuario {
 
 	/**
 	 * 
-	 * @param {JSONObject} usuario 
+	 * @param {JSONObject} PersonalCampo 
 	 * @param {Number} id 
 	 * @returns JSONObject
 	 */
-	static async update(usuario, id) {
-		
-		if (usuario.contrasenia) {
-			usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
-		}
-		const keys = Object.keys(usuario);
-		const values = Object.values(usuario);
-		let query = 'UPDATE usuario SET ';
+	static async update(PersonalCampo, id) {
+
+		const keys = Object.keys(PersonalCampo);
+		const values = Object.values(PersonalCampo);
+		let query = 'UPDATE personal_campo SET ';
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
 			index++;
 		})
 		query = query.substr(0, query.length - 2);
-		query += ` WHERE id_usuario=$${index + 1} RETURNING *;`;
+		query += ` WHERE id_personal=$${index + 1} RETURNING *;`;
 		values.push(id);
 		
 		const queryResult = await pool.query(query, values);
@@ -154,7 +150,7 @@ class Usuario {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from personal_campo where id_personal =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -170,4 +166,4 @@ class Usuario {
 }
 
 
-module.exports = Usuario;
+module.exports = PersonalCampo;
