@@ -31,6 +31,7 @@ app.use('/api/subtipo',require('./routes/subtipoincidencia.routes'));
 app.use('/api/personal-campo',require('./routes/personalcampo.routes'));
 app.use('/api/accion-incidencia',require('./routes/accionincidencia.routes'));
 app.use('/api/tipo-accion',require('./routes/tipoaccion.routes'));
+app.use('/api/video',require('./routes/video.routes'));
 app.use('/',swagerUiServe,swaggerUiSetUp);
 
 module.exports= app;

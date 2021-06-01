@@ -52,6 +52,44 @@ io.on('connection',socket=>{
 			io.emit(`usuario_${id_personal}`,resp);
 		}
 	})
+	socket.on('streaming',async (obj)=>{
+		if(obj){
+			const data=JSON.parse(obj);
+
+			console.log("DATA_FRON_STREAMING:",data.idUduario,data.userInfo);
+			const idUsuario=data.idUduario;
+			const userInfo=data.userInfo;	
+			const resp={idUsuario,userInfo}
+			users.push(resp);		
+			io.emit(`streaming_conect`,resp);
+		}
+	})
+	socket.on('streaming_list',()=>{
+			io.emit('streaming_list',users);
+		
+	})
+	socket.on('streaming_off',async (obj)=>{
+		if(obj){
+			let pos=-1;
+			users.map((u,i)=>{
+				if(u.id_personal===obj.id_personal){
+					pos=i;
+					return;
+				}
+			});
+			console.log('POS_USU:',pos);
+			if(pos>=0){
+				console.log(users.splice(pos,1));
+				
+			}
+			const data=JSON.parse(obj);
+			console.log("DATA_FRON_STREAMING_OFF:",data);
+			const idUsuario=data.idUduario;
+			const userInfo=data.userInfo;	
+			const resp={idUsuario,userInfo}		
+			io.emit(`streaming_off`,resp);
+		}
+	})
 });
 
 const getCountIncidencias=async (idPersonal)=>{
