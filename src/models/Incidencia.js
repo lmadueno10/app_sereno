@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing Incidencia Model.
  *
@@ -19,17 +20,17 @@ class Incidencia {
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
 		ai.ev_video,ai.ev_audio,ai.ev_image,ai.descripcion a_descripcion
-          FROM incidencia i 
-        INNER JOIN ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
-        INNER JOIN ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
-        INNER JOIN ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
-        LEFT JOIN personal_campo p ON p.id_personal = i.id_sereno_asignado 
-        LEFT JOIN usuario u ON u.id_usuario = p.id_usuario `+
-		`LEFT JOIN accion_incidencia ai ON i.id_incidencia=ai.id_incidencia `+
+          FROM ${sc}incidencia i 
+        INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
+        LEFT JOIN ${sc}personal_campo p ON p.id_personal = i.id_sereno_asignado 
+        LEFT JOIN ${sc}usuario u ON u.id_usuario = p.id_usuario `+
+		`LEFT JOIN ${sc}accion_incidencia ai ON i.id_incidencia=ai.id_incidencia `+
 		//LEFT JOIN evidencia e ON i.id_incidencia=e.id_incidencia
 		`WHERE s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' AND ssc.tabla='ssc_subtipo_inc'
 		ORDER BY 1 DESC;`
-		const q2="select * from incidencia";
+		const q2=`select * from ${sc}incidencia`;
 		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -48,7 +49,7 @@ class Incidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from Incidencia where id_incidencia =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}Incidencia where id_incidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -67,7 +68,7 @@ class Incidencia {
 	 */
 	static async getIncidentByReporterName(name) {
         name+='%';
-		const queryResult = await pool.query(`select * from Incidencia where nombre_ciudadano LIKE $1`, [name]);
+		const queryResult = await pool.query(`select * from ${sc}Incidencia where nombre_ciudadano LIKE $1`, [name]);
 		if (queryResult) {
 			const result = queryResult.rows[0];
 			if (result) {
@@ -92,12 +93,12 @@ class Incidencia {
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
-          FROM incidencia i 
-        INNER JOIN ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
-        INNER JOIN ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
-        INNER JOIN ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
-        INNER JOIN personal_campo p ON p.id_personal = i.id_sereno_asignado 
-        INNER JOIN usuario u ON u.id_usuario = p.id_usuario `+
+          FROM ${sc}incidencia i 
+        INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
+        INNER JOIN ${sc}personal_campo p ON p.id_personal = i.id_sereno_asignado 
+        INNER JOIN ${sc}usuario u ON u.id_usuario = p.id_usuario `+
 		//LEFT JOIN evidencia e ON i.id_incidencia=e.id_incidencia
 		`WHERE s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' AND ssc.tabla='ssc_subtipo_inc'
 		AND i.id_sereno_asignado =$1 AND i.estado=1 AND i.id_usuario_rep<>$1 
@@ -127,12 +128,12 @@ class Incidencia {
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
-          FROM incidencia i 
-        INNER JOIN ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
-        INNER JOIN ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
-        INNER JOIN ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
-        LEFT JOIN personal_campo p ON p.id_personal = i.id_sereno_asignado 
-        LEFT JOIN usuario u ON u.id_usuario = p.id_usuario `+
+          FROM ${sc}incidencia i 
+        INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
+        INNER JOIN ${sc}ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id 
+        LEFT JOIN ${sc}personal_campo p ON p.id_personal = i.id_sereno_asignado 
+        LEFT JOIN ${sc}usuario u ON u.id_usuario = p.id_usuario `+
 		`WHERE s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' AND ssc.tabla='ssc_subtipo_inc'
 		AND i.id_usuario_rep =$1 AND i.estado=1
 		ORDER BY 1 DESC;`
@@ -154,7 +155,7 @@ class Incidencia {
 	 * @returns {JSONObject}
 	 */
 	 static async getCountIncidenciasByIdSerenoAsignado(id) {
-		const query=`SELECT count(*) FROM incidencia i `+
+		const query=`SELECT count(*) FROM ${sc}incidencia i `+
 		`WHERE i.id_sereno_asignado =$1 AND i.estado=1 AND  i.id_usuario_rep<>$1;`;
 		const queryResult = await pool.query(query, [id]);
 		if (queryResult) {
@@ -174,7 +175,7 @@ class Incidencia {
 	 * @returns {JSONObject}
 	 */
 		 static async getCountIncidenciasByIdUsuarioRep(id) {
-			const query=`SELECT count(*) FROM incidencia i `+
+			const query=`SELECT count(*) FROM ${sc}incidencia i `+
 			`WHERE i.id_usuario_rep =$1 AND i.estado=1;`;
 			const queryResult = await pool.query(query, [id]);
 			if (queryResult) {
@@ -196,7 +197,7 @@ class Incidencia {
 	static async create(incidencia) {
 		const keys = Object.keys(incidencia);
 		const values = Object.values(incidencia);
-		let query = 'INSERT INTO incidencia(';
+		let query = `INSERT INTO ${sc}incidencia(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -230,7 +231,7 @@ class Incidencia {
 	static async update(incidencia, id) {
 		const keys = Object.keys(incidencia);
 		const values = Object.values(incidencia);
-		let query = 'UPDATE incidencia SET ';
+		let query = `UPDATE ${sc}incidencia SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -258,7 +259,7 @@ class Incidencia {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from Incidencia where id_Incidencia =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}Incidencia where id_Incidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

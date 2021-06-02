@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing TipoAccion Model.
  *
@@ -12,7 +13,7 @@ class TipoAccion {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-        const query=`select * from tipo_accion order by 2`
+        const query=`select * from ${sc}tipo_accion order by 2`
 		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -31,7 +32,7 @@ class TipoAccion {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from tipo_accion where id_tipo_accion =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}tipo_accion where id_tipo_accion =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -53,7 +54,7 @@ class TipoAccion {
 		
 		const keys = Object.keys(tipoAccion);
 		const values = Object.values(tipoAccion);
-		let query = 'INSERT INTO tipo_accion(';
+		let query = `INSERT INTO ${sc}tipo_accion(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -88,7 +89,7 @@ class TipoAccion {
 	static async update(tipoAccion, id) {
 		const keys = Object.keys(tipoAccion);
 		const values = Object.values(tipoAccion);
-		let query = 'UPDATE tipo_accion SET ';
+		let query = `UPDATE ${sc}tipo_accion SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -116,7 +117,7 @@ class TipoAccion {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from tipo_accion where id_tipo_accion =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}tipo_accion where id_tipo_accion =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

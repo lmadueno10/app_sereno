@@ -1,4 +1,5 @@
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing Video Model.
  *
@@ -11,8 +12,8 @@ class Video {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll(filter) {
-        let query=`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos from video v inner join personal_campo pc on v.id_personal=pc.id_personal `+
-                    `inner join usuario u on pc.id_usuario=u.id_usuario `;
+        let query=`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos from ${sc}video v inner join ${sc}personal_campo pc on v.id_personal=pc.id_personal `+
+                    `inner join ${sc}usuario u on pc.id_usuario=u.id_usuario `;
         let options=[];
         const {fecha_inicial,fecha_final,hora,sereno}=filter
         if(fecha_inicial&&fecha_final&&hora&&sereno){
@@ -58,9 +59,9 @@ class Video {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos from video v `+
-        `inner join personal_campo pc on v.id_personal=pc.id_personal `+
-        `inner join usuario u on pc.id_usuario=u.id_usuario where v.id_video=$1`, [id]);
+		const queryResult = await pool.query(`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos from ${sc}video v `+
+        `inner join ${sc}personal_campo pc on v.id_personal=pc.id_personal `+
+        `inner join ${sc}usuario u on pc.id_usuario=u.id_usuario where v.id_video=$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -82,7 +83,7 @@ class Video {
 		
 		const keys = Object.keys(video);
 		const values = Object.values(video);
-		let query = 'INSERT INTO Video(';
+		let query = `INSERT INTO ${sc}video(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -117,7 +118,7 @@ class Video {
 
 		const keys = Object.keys(video);
 		const values = Object.values(video);
-		let query = 'UPDATE video SET ';
+		let query = `UPDATE ${sc}video SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -146,7 +147,7 @@ class Video {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from video where id_video =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}video where id_video =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

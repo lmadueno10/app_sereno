@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing Incidencia Model.
  *
@@ -12,7 +13,7 @@ class SubtipoIncidencia {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-        const query=`select s.multitabla_id,s.tabla,s.sigla,s.valor,s.padre_id,s.estado,t.valor tipo from ssc_multitabla s INNER JOIN ssc_multitabla t on s.padre_id=t.multitabla_id where s.tabla=$1 and t.tabla=$2 ORDER BY 1;`;
+        const query=`select s.multitabla_id,s.tabla,s.sigla,s.valor,s.padre_id,s.estado,t.valor tipo from ${sc}ssc_multitabla s INNER JOIN ${sc}ssc_multitabla t on s.padre_id=t.multitabla_id where s.tabla=$1 and t.tabla=$2 ORDER BY 1;`;
 		const queryResult = await pool.query(query,['ssc_subtipo_inc','ssc_tipo_inc']);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -31,7 +32,7 @@ class SubtipoIncidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from ssc_multitabla where multitabla_id =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}ssc_multitabla where multitabla_id =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -50,7 +51,7 @@ class SubtipoIncidencia {
 	 */
 	static async getIncidentByReporterName(name) {
         name+='%';
-		const queryResult = await pool.query(`select * from ssc_multitabla where tabla="ssc_subtipo_inc" AND valor LIKE $1`, [name]);
+		const queryResult = await pool.query(`select * from ${sc}ssc_multitabla where tabla="ssc_subtipo_inc" AND valor LIKE $1`, [name]);
 		if (queryResult) {
 			const result = queryResult.rows[0];
 			if (result) {
@@ -68,7 +69,7 @@ class SubtipoIncidencia {
 	 * @returns Array<JSONObject>
 	 */
 	 static async getAllSubtipoByIdTipo(id) {
-        const query=`select s.multitabla_id,s.tabla,s.sigla,s.valor,s.padre_id,s.estado,t.valor tipo from ssc_multitabla s INNER JOIN ssc_multitabla t on s.padre_id=t.multitabla_id where s.tabla=$1 and t.tabla=$2 and s.padre_id=$3 ORDER BY 4;`;
+        const query=`select s.multitabla_id,s.tabla,s.sigla,s.valor,s.padre_id,s.estado,t.valor tipo from ${sc}ssc_multitabla s INNER JOIN ${sc}ssc_multitabla t on s.padre_id=t.multitabla_id where s.tabla=$1 and t.tabla=$2 and s.padre_id=$3 ORDER BY 4;`;
 		const queryResult = await pool.query(query,['ssc_subtipo_inc','ssc_tipo_inc',id]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -90,7 +91,7 @@ class SubtipoIncidencia {
 	static async create(tipo){
         const values=Object.values(tipo);
 		values.push('ssc_subtipo_inc');
-		let query = 'INSERT INTO ssc_multitabla (sigla,valor,padre_id,tabla) VALUES($1,$2,$3,$4) RETURNING *;';
+		let query = `INSERT INTO ${sc}ssc_multitabla (sigla,valor,padre_id,tabla) VALUES($1,$2,$3,$4) RETURNING *;`;
 
 		const queryResult = await pool.query(query,values);
 		if (queryResult) {
@@ -114,7 +115,7 @@ class SubtipoIncidencia {
 	static async update(tipo, id) {
 		const keys = Object.keys(tipo);
 		const values = Object.values(tipo);
-		let query = 'UPDATE ssc_multitabla SET ';
+		let query = `UPDATE ${sc}ssc_multitabla SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -142,7 +143,7 @@ class SubtipoIncidencia {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from ssc_multitabla where multitabla_id =$1 and tabla='ssc_subtipo_inc'`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}ssc_multitabla where multitabla_id =$1 and tabla='ssc_subtipo_inc'`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

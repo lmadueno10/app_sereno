@@ -1,4 +1,5 @@
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing Evidencia Model.
  *
@@ -11,7 +12,7 @@ class Evidencia {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-        const query=`select * from evidencia`
+        const query=`select * from ${sc}evidencia`
 		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -30,7 +31,7 @@ class Evidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from evidencia where id_evidencia =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}evidencia where id_evidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -48,7 +49,7 @@ class Evidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getEvidenciasByIdIncidencia(id) {
-		const queryResult = await pool.query(`select * from evidencia where id_incidencia = $1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}evidencia where id_incidencia = $1`, [id]);
 		if (queryResult) {
 			const result = queryResult.rows[0];
 			if (result) {
@@ -69,7 +70,7 @@ class Evidencia {
 		
 		const keys = Object.keys(evidencia);
 		const values = Object.values(evidencia);
-		let query = 'INSERT INTO evidencia(';
+		let query = `INSERT INTO ${sc}evidencia(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -104,7 +105,7 @@ class Evidencia {
 
 		const keys = Object.keys(evidencia);
 		const values = Object.values(evidencia);
-		let query = 'UPDATE evidencia SET ';
+		let query = `UPDATE ${sc}evidencia SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -133,7 +134,7 @@ class Evidencia {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from evidencia where id_evidencia =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}evidencia where id_evidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

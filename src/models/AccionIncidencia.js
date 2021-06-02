@@ -1,5 +1,6 @@
 const { pool } = require('../database.js');
 const Incidencia=require('./Incidencia');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing AccionIncidencia Model.
  *
@@ -12,7 +13,7 @@ class AccionIncidencia {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-        const query=`select * from accion_incidencia`
+        const query=`select * from ${sc}accion_incidencia`
 		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -31,7 +32,7 @@ class AccionIncidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from accion_incidencia where id_tipo_accion =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}accion_incidencia where id_tipo_accion =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -53,7 +54,7 @@ class AccionIncidencia {
 		
 		const keys = Object.keys(accionIncidencia);
 		const values = Object.values(accionIncidencia);
-		let query = 'INSERT INTO accion_incidencia(';
+		let query = `INSERT INTO ${sc}accion_incidencia(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -88,7 +89,7 @@ class AccionIncidencia {
 	static async update(accionIncidencia, id) {
 		const keys = Object.keys(accionIncidencia);
 		const values = Object.values(accionIncidencia);
-		let query = 'UPDATE accion_incidencia SET ';
+		let query = `UPDATE ${sc}accion_incidencia SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -116,7 +117,7 @@ class AccionIncidencia {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from tipo_accion where id_accion_incidencia =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}tipo_accion where id_accion_incidencia =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

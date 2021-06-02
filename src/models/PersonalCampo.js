@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing PersonalCampo Model.
  *
@@ -28,7 +29,7 @@ class PersonalCampo {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario ORDER BY 1 DESC LIMIT 200`,[]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,pc.id_personal,pc.EMEI,pc.estado from ${sc}personal_campo pc INNER JOIN ${sc}usuario u on pc.id_usuario=u.id_usuario ORDER BY 1 DESC LIMIT 200`,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
@@ -46,7 +47,7 @@ class PersonalCampo {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario WHERE pc.id_personal =$1`, [id]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from ${sc}personal_campo pc INNER JOIN ${sc}usuario u on pc.id_usuario=u.id_usuario WHERE pc.id_personal =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -65,7 +66,7 @@ class PersonalCampo {
 	 * @returns {JSONObject}
 	 */
 	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from personal_campo pc INNER JOIN usuario u on pc.id_usuario=u.id_usuario WHERE u.usuario =$1`, [userName]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from ${sc}personal_campo pc INNER JOIN ${sc}usuario u on pc.id_usuario=u.id_usuario WHERE u.usuario =$1`, [userName]);
 		if (queryResult) {
 			const userFound = queryResult.rows[0];
 			if (userFound) {
@@ -86,7 +87,7 @@ class PersonalCampo {
 		
 		const keys = Object.keys(PersonalCampo);
 		const values = Object.values(PersonalCampo);
-		let query = 'INSERT INTO personal_campo(';
+		let query = `INSERT INTO ${sc}personal_campo(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -121,7 +122,7 @@ class PersonalCampo {
 
 		const keys = Object.keys(PersonalCampo);
 		const values = Object.values(PersonalCampo);
-		let query = 'UPDATE personal_campo SET ';
+		let query = `UPDATE ${sc}personal_campo SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -150,7 +151,7 @@ class PersonalCampo {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from personal_campo where id_personal =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}personal_campo where id_personal =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

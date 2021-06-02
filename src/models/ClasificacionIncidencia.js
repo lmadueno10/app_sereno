@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing ClasificacionIncidencia Model.
  *
@@ -12,7 +13,7 @@ class ClasificacionIncidencia {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-        const query=`select * from ssc_multitabla where tabla=$1;`
+        const query=`select * from ${sc}ssc_multitabla where tabla=$1;`
 		const queryResult = await pool.query(query,['ssc_clasificacion_inc']);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -31,7 +32,7 @@ class ClasificacionIncidencia {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from ssc_multitabla where multitabla_id =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}ssc_multitabla where multitabla_id =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -50,7 +51,7 @@ class ClasificacionIncidencia {
 	 */
 	static async getIncidentByReporterName(name) {
         name+='%';
-		const queryResult = await pool.query(`select * from ssc_multitabla where valor LIKE $1`, [name]);
+		const queryResult = await pool.query(`select * from ${sc}ssc_multitabla where valor LIKE $1`, [name]);
 		if (queryResult) {
 			const result = queryResult.rows[0];
 			if (result) {
@@ -71,7 +72,7 @@ class ClasificacionIncidencia {
         const values=Object.values(clasificacion);
 		values.push('ssc_clasificacion_inc');
 		console.log(values);
-		let query = 'INSERT INTO "ssc_multitabla"  ("sigla","valor","tabla","padre_id") VALUES ($1,$2,$3,0) RETURNING *;';
+		let query = `INSERT INTO ${sc}"ssc_multitabla"  ("sigla","valor","tabla","padre_id") VALUES ($1,$2,$3,0) RETURNING *;`;
 		console.log(query)
 		const queryResult = await pool.query(query,values);
 		if (queryResult) {
@@ -95,7 +96,7 @@ class ClasificacionIncidencia {
 	static async update(clasificacion, id) {
 		const keys = Object.keys(clasificacion);
 		const values = Object.values(clasificacion);
-		let query = 'UPDATE ssc_multitabla SET ';
+		let query = `UPDATE ${sc}ssc_multitabla SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -123,7 +124,7 @@ class ClasificacionIncidencia {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from ssc_multitabla where multitabla_id =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}ssc_multitabla where multitabla_id =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

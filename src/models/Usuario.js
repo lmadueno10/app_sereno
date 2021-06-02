@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const { pool } = require('../database.js');
+const sc=process.env.SCHEMA?process.env.SCHEMA+'.':'';
 /**
  * Class representing Usuario Model.
  *
@@ -28,8 +29,8 @@ class Usuario {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll() {
-		const queryResult = await pool.query(`select u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.estado from usuario u 
-		left join personal_campo p on u.id_usuario=p.id_usuario where id_personal is null;`,[]);
+		const queryResult = await pool.query(`select u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.estado from ${sc}usuario u 
+		left join ${sc}personal_campo p on u.id_usuario=p.id_usuario where id_personal is null;`,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
@@ -47,7 +48,7 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`select * from ${sc}usuario where id_usuario =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
@@ -66,7 +67,7 @@ class Usuario {
 	 * @returns {JSONObject}
 	 */
 	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`select * from usuario where usuario =$1`, [userName]);
+		const queryResult = await pool.query(`select * from ${sc}usuario where usuario =$1`, [userName]);
 		if (queryResult) {
 			const userFound = queryResult.rows[0];
 			if (userFound) {
@@ -87,7 +88,7 @@ class Usuario {
 		usuario.contrasenia = await this.encryptPassword(usuario.contrasenia);
 		const keys = Object.keys(usuario);
 		const values = Object.values(usuario);
-		let query = 'INSERT INTO usuario(';
+		let query = `INSERT INTO ${sc}usuario(`;
 		let queryValues = '';
 		let index = 0;
 		keys.forEach(key => {
@@ -125,7 +126,7 @@ class Usuario {
 		}
 		const keys = Object.keys(usuario);
 		const values = Object.values(usuario);
-		let query = 'UPDATE usuario SET ';
+		let query = `UPDATE ${sc}usuario SET `;
 		let index = 0;
 		keys.forEach(key => {
 			query += `${key}=$${index + 1}, `;
@@ -154,7 +155,7 @@ class Usuario {
 	 * 
 	 */
 	static async delete(id) {
-		const queryResult = await pool.query(`DELETE from usuario where id_usuario =$1`, [id]);
+		const queryResult = await pool.query(`DELETE from ${sc}usuario where id_usuario =$1`, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {
