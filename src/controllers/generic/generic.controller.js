@@ -11,7 +11,7 @@ class GenericController{
 	 * @returns {JSONObject}
 	 */
 	async create(req,res,model){
-		//try{
+		try{
 			const resp=await model.create(req.body);
 			if(resp.data){
 				res.status(201).json({code:201,data:resp.data});
@@ -19,9 +19,9 @@ class GenericController{
 				res.status(200).json({code:400,data:resp.data});
 			}
 			
-		//}catch(err){	
-		//	res.status(500).json({code:500,data:err});
-		//}
+		}catch(err){	
+			res.status(500).json({code:500,data:err});
+		}
 
 	}
 	/**
@@ -39,6 +39,7 @@ class GenericController{
 				res.status(404).json({});
 			}
 		}catch(err){
+
 			res.status(500).json({message:'Internal Error',data:err});
 		}
 	}
@@ -88,16 +89,16 @@ class GenericController{
 	 * @returns {Object}
 	 */
 	async delete(req,res,model,name){
-		//try{
+		try{
 			const resp=await model.delete(req.params.id);
 			if(res.data){
 				res.json({message:`${name} Eliminado`,code:200});
 			}else{
 				res.status(204).json({});
 			}
-		//}catch(err){
-		//	res.status(500).json({message:'Internal Error',data:err});
-		//}
+		}catch(err){
+			res.status(500).json({message:'Internal Error',data:err});
+		}
 	}
 }
 

@@ -16,9 +16,9 @@ class Incidencia {
         const query=`SELECT DISTINCT  i.id_incidencia,CONCAT(i.fecha,' ',i.hora) fecha_hora,i.fecha,i.hora,i.id_sereno_asignado,u.nombres_apellidos,i.nombre_ciudadano,i.telefono_ciudadano,
         s.valor clasificacion,s.multitabla_id id_clasificacion , ss.valor tipo,ss.multitabla_id id_tipo,ssc.valor subtipo,ssc.multitabla_id id_subtipo,
 		i.interior,i.lote,i.referencia,i.descripcion,i.nro_direccion,i.direccion,i.estado,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
 		ai.ev_video,ai.ev_audio,ai.ev_image,ai.descripcion a_descripcion
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
@@ -90,9 +90,9 @@ class Incidencia {
         s.valor clasificacion,s.multitabla_id id_clasificacion , ss.valor tipo,ss.multitabla_id id_tipo,ssc.valor subtipo,ssc.multitabla_id id_subtipo,
 		i.interior,i.lote,i.referencia,i.descripcion,i.nro_direccion,i.direccion,i.estado,
 		i.id_usuario_rep,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
@@ -125,9 +125,9 @@ class Incidencia {
         s.valor clasificacion,s.multitabla_id id_clasificacion , ss.valor tipo,ss.multitabla_id id_tipo,ssc.valor subtipo,ssc.multitabla_id id_subtipo,
 		i.interior,i.lote,i.referencia,i.descripcion,i.nro_direccion,i.direccion,i.estado,
 		i.id_usuario_rep,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
-		(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 

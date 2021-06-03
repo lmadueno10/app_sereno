@@ -14,6 +14,7 @@ class TipoAccion {
 	 */
 	static async getAll() {
         const query=`select * from ${sc}tipo_accion order by 2`
+		console.log(query);
 		const queryResult = await pool.query(query,[]);
 		if (queryResult) {
 			const result=queryResult.rows;
@@ -32,7 +33,9 @@ class TipoAccion {
 	 * @returns {JSONObject}
 	 */
 	static async getById(id) {
-		const queryResult = await pool.query(`select * from ${sc}tipo_accion where id_tipo_accion =$1`, [id]);
+		const query=`select * from ${sc}tipo_accion where id_tipo_accion =$1`;
+		console.log(query);
+		const queryResult = await pool.query(query, [id]);
 		if (queryResult) {
 			const result=queryResult.rows[0];
 			if (result) {

@@ -28,7 +28,7 @@ router.get('/',(req,resp)=>tc.getAll(req,resp,TipoAccion));
  *       '200':
  *         description: A successful response.
 */
-router.get('/:id',(req,resp)=>tc.getById(req,resp,Usuario));
+router.get('/:id',(req,resp)=>tc.getById(req,resp,TipoAccion));
 router.post('/',(req,resp)=>tc.create(req,resp,TipoAccion));
 router.put('/:id',(req,resp)=>tc.update(req,resp,TipoAccion));
 router.delete('/:id',(req,res)=>tc.delete(req,res,TipoAccion));
