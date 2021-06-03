@@ -45,6 +45,7 @@ class AuthController{
 		try{
 			const {usuario,password}=req.body;
 			const userFound = await PersonalCampo.getUserByUserName(usuario);
+			console.log(userFound);
 			if(userFound){
 				const matchPassword= await PersonalCampo.comparePassword(password,userFound.contrasenia);
 				

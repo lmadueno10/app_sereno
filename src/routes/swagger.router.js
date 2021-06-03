@@ -9,11 +9,11 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'https://app-sereno.herokuapp.com/',
+      url: `http://95.217.44.43:${process.env.PORT}`,
       description: 'Demo server',
     },
     {
-      url: 'http://localhost:3000',
+      url: `http://localhost:${process.env.PORT}`,
       description: 'Development server',
     },
   ]

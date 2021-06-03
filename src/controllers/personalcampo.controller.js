@@ -17,11 +17,11 @@ class PersonalCampoController extends GenericController{
                 sector ,
                 usuario,
                 contrasenia,
-                EMEI}=req.body;
+                emei}=req.body;
 
 			const resp=await usuarioModel.create({codigo, dni, nombres_apellidos, celular, sector, usuario, contrasenia, id_supervisor});
             const id_usuario=resp.data.id_usuario;
-            const result=await personalModel.create({id_usuario:id_usuario,EMEI:EMEI});
+            const result=await personalModel.create({id_usuario:id_usuario,emei:emei});
 
 			if(result.data){
 				res.status(201).json({code:201,data:result.data});

@@ -66,7 +66,7 @@ class PersonalCampo {
 	 * @returns {JSONObject}
 	 */
 	static async getUserByUserName(userName) {
-		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.EMEI,pc.estado from ${sc}personal_campo pc INNER JOIN ${sc}usuario u on pc.id_usuario=u.id_usuario WHERE u.usuario =$1`, [userName]);
+		const queryResult = await pool.query(`SELECT u.id_usuario,u.nombres_apellidos,u.dni,u.celular,u.codigo,u.id_supervisor,u.sector,u.usuario,u.contrasenia,pc.id_personal,pc.emei,pc.estado from ${sc}personal_campo pc INNER JOIN ${sc}usuario u on pc.id_usuario=u.id_usuario WHERE u.usuario =$1`, [userName]);
 		if (queryResult) {
 			const userFound = queryResult.rows[0];
 			if (userFound) {
