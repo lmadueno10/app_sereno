@@ -9,7 +9,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: `http://95.217.44.43:${process.env.PORT}`,
+      url: `http://services.colaboraccion.pe:${process.env.PORT}`,
       description: 'Demo server',
     },
     {
