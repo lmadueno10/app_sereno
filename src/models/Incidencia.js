@@ -210,7 +210,7 @@ class Incidencia {
 	}
 
 	static async getCantIncidenciaUltimaHora() {
-		const query = `SELECT extract(hour from i.hora) hora FROM incidencia i where i.fecha=current_date order by i.id_incidencia desc limit 1;
+		const query = `SELECT extract(hour from i.hora) hora FROM ${sc}incidencia i where i.fecha=current_date order by i.id_incidencia desc limit 1;
 		`;
 		const queryResult = await pool.query(query,[]);
 		if(queryResult){
