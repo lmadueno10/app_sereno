@@ -1,5 +1,6 @@
 const {Router} =require('express');
 const VideoController = require('../controllers/video.controller');
+const signVideo = require('../middlewares/signVideo');
 const Video = require('../models/Video');
 const router = Router();
 
@@ -29,7 +30,7 @@ router.get('/',(req,resp)=>vc.getAll(req,resp,Video));
  *         description: A successful response.
 */
 router.get('/:id',(req,resp)=>vc.getById(req,resp,Video));
-router.post('/',(req,resp)=>vc.create(req,resp,Video));
+router.post('/',[signVideo],(req,resp)=>vc.create(req,resp,Video));
 router.put('/:id',(req,resp)=>vc.update(req,resp,Video));
 router.delete('/:id',(req,res)=>vc.delete(req,res,Video));
 

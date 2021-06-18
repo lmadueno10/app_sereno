@@ -3,6 +3,7 @@ const router = Router();
 const IncidenciaController = require('../controllers/incidencia.controller');
 const Incidencia = require('../models/Incidencia');
 const EvidenciaController = require('../controllers/evidencia.controller');
+const signVideo = require('../middlewares/signVideo');
 const ic =new IncidenciaController();
 const ec = new EvidenciaController();
 
@@ -33,7 +34,7 @@ router.get('/:id',(req,resp)=>ic.getById(req,resp,Incidencia));
 router.get('/sereno/:id',(req,resp)=>ic.getAllIncidenciaByIdPersonal(req,resp,Incidencia));
 router.get('/usuario/:id',(req,resp)=>ic.getAllIncidenciaByIdUsuarioRep(req,resp,Incidencia));
 router.get('/dashboard/count',(req,resp)=>ic.getDataDashboard(req,resp,Incidencia));
-router.post('/',(req,resp)=>ic.create(req,resp,Incidencia,));
+router.post('/',[signVideo],(req,resp)=>ic.create(req,resp,Incidencia,));
 router.post('/sereno',(req,res)=>ec.create(req,res));
 router.put('/:id',(req,resp)=>ic.update(req,resp,Incidencia));
 router.delete('/:id',(req,res)=>ic.delete(req,res,Incidencia));
