@@ -21,31 +21,37 @@ const signVideo=async (req,res,next)=>{
             }else{
                 fechaBar= new Date();
             }
-            //console.log(video);
+            
             const originalName=video.originalname;
             const finalName=video.filename;
             const dirPath=video.destination;
             const realName=video.path;
+            const videoNameTemp='temp_'+finalName;
+            const pathVideoNameTemp=path.join(dirPath,videoNameTemp);
+            
             const imgBarName=new Date().getTime()+'.png';
             const imageBar=path.join(dirPath,'temp','bar.png');
             const imgBarResult=path.join(dirPath,'temp',imgBarName);
-            //console.log(dirPath,finalName,realName);
-            await fs.rename(realName,path.join(dirPath,originalName));
-            await brand(path.join(dirPath, originalName),fechaBar,imageBar,imgBarResult,realName);
-            
 
+            //console.log(dirPath,finalName,realName);
+            await fs.rename(realName,pathVideoNameTemp);
+            await createBrand(fechaBar,imageBar,imgBarResult,pathVideoNameTemp,realName);
+            //await brand(path.join(dirPath, originalName),fechaBar,imageBar,imgBarResult,realName);
+           next();
+            
+            
+        }else{
+            next();
         }
 	}catch(err){
 	    console.error(err);
 	}
-    next();
 }
 
-const brand =async (nameVideo,fecha,imageBar,nameImage,videoResult) => {
+const brand =async (nameVideo,nameImage,videoResult) => {
     try {
-        const p = new ffmpeg(nameVideo);
-        await createBrand(fecha,imageBar,nameImage);
         console.log("Procesando video...");
+        const p = new ffmpeg(nameVideo);
         p.then(function (video) {
             video.fnAddWatermark(nameImage, videoResult, {
                 position : 'SE',margin_west:3
@@ -53,22 +59,22 @@ const brand =async (nameVideo,fecha,imageBar,nameImage,videoResult) => {
                 if (!error){
                     fs.unlink(nameImage);
                     fs.unlink(nameVideo);
-                    console.log('New video file: ' + file);
+                    console.log('Video was signed',file);
                 }else{
                     fs.rename(nameVideo,videoResult);
                 }
             });
         }, function (err) {
             fs.rename(nameVideo,videoResult);
-            console.log('Error: ' + err);
+            console.log('Error al cargar video: ' + err);
         });
     } catch (error) {
         fs.rename(nameVideo,videoResult);
-        console.log(error);
+        console.log('error al firmar video',error);
     }
 }
 
-const createBrand=(fecha,imageBar,name)=>{
+const createBrand=async (fecha,imageBar,name,pathVideoNameTemp,realName)=>{
     console.log("creating bar...");
     let loadImage;
     const title='Registrado por el Software SGIE el '+getDateString(fecha);
@@ -76,11 +82,12 @@ const createBrand=(fecha,imageBar,name)=>{
     .then(image=>{
        loadImage =image;
        return jimp.loadFont(jimp.FONT_SANS_16_WHITE)
-    }).then(font=>{
+    }).then(async font=>{
         loadImage.print(font,35,5,title).write(name);
         console.log(`${name} file created`);
+        await brand(pathVideoNameTemp,name,realName);
     }).catch(err=>{
-        console.log(err);
+        console.log("Error al crear Imagen ",title,err);
     })
 }
 

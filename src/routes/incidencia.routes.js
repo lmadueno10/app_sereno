@@ -35,7 +35,7 @@ router.get('/sereno/:id',(req,resp)=>ic.getAllIncidenciaByIdPersonal(req,resp,In
 router.get('/usuario/:id',(req,resp)=>ic.getAllIncidenciaByIdUsuarioRep(req,resp,Incidencia));
 router.get('/dashboard/count',(req,resp)=>ic.getDataDashboard(req,resp,Incidencia));
 router.post('/',[signVideo],(req,resp)=>ic.create(req,resp,Incidencia,));
-router.post('/sereno',(req,res)=>ec.create(req,res));
+router.post('/sereno',[signVideo],(req,res)=>ec.create(req,res));
 router.put('/:id',(req,resp)=>ic.update(req,resp,Incidencia));
 router.delete('/:id',(req,res)=>ic.delete(req,res,Incidencia));
 
