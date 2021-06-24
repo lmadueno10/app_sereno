@@ -11,7 +11,7 @@ const ffmpeg= require('ffmpeg');
 const signVideo=async (req,res,next)=>{
 	try{
 		const files=req.files;
-        const video=files.video[0];
+        const video=(files&&files.video)?files.video[0]:undefined;
         const {fecha,hora}=req.body;
         if(video){
             //console.log(video);
@@ -54,7 +54,7 @@ const brand =async (nameVideo,nameImage,videoResult) => {
         const p = new ffmpeg(nameVideo);
         p.then(function (video) {
             video.fnAddWatermark(nameImage, videoResult, {
-                position : 'SE',margin_west:3
+                position : 'SW',margin_west:3,margin_sud:15
             }, function (error, file) {
                 if (!error){
                     fs.unlink(nameImage);
@@ -62,6 +62,7 @@ const brand =async (nameVideo,nameImage,videoResult) => {
                     console.log('Video was signed',file);
                 }else{
                     fs.rename(nameVideo,videoResult);
+                    console.log("error al firmar video\n",error);
                 }
             });
         }, function (err) {
