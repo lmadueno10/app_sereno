@@ -12,36 +12,87 @@ class Video {
 	 * @returns Array<JSONObject>
 	 */
 	static async getAll(filter) {
-        let query=`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos from ${sc}video v inner join ${sc}personal_campo pc on v.id_personal=pc.id_personal `+
-                    `inner join ${sc}usuario u on pc.id_usuario=u.id_usuario `;
-        let options=[];
-        const {fecha_inicial,fecha_final,hora,sereno}=filter
+		const {fecha_inicial,fecha_final,hora,sereno,inc,vid,evi}=filter
+		let query=`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos,'Streaming' source from ${sc}video v `+
+			`inner join ${sc}personal_campo pc on v.id_personal=pc.id_personal `+
+			`inner join ${sc}usuario u on pc.id_usuario=u.id_usuario `;
+		let query1=`select null, url_evidencia nombre_video, i.fecha fecha,i.hora hora,concat(i.fecha,' ',i.hora) fecha_hora,i.id_sereno_asignado id_personal, u.nombres_apellidos nombres_apellidos, 'Incidencia' source `+
+			`from ${sc}evidencia e `+
+			`inner join ${sc}incidencia i on e.id_incidencia=i.id_incidencia `+
+			`inner join ${sc}personal_campo p on i.id_sereno_asignado=p.id_personal `+
+			`inner join ${sc}usuario u on p.id_usuario=u.id_usuario `+
+			`where e.tipo='video' `;
+		let query2=`select null, ai.ev_video nombre_video,ai.fecha,ai.hora,concat(ai.fecha,' ',ai.hora) fecha_hora,i.id_sereno_asignado id_personal,u.nombres_apellidos nombres_apellidos,'Cierre caso' source from ${sc}accion_incidencia ai `+
+			`inner join ${sc}incidencia i on ai.id_incidencia=i.id_incidencia `+
+			`inner join ${sc}personal_campo p on i.id_sereno_asignado=p.id_personal `+
+			`inner join ${sc}usuario u on p.id_usuario=u.id_usuario `+
+			`where ev_video is not null`;
+
+		let options=[];
+
+		
+        //let query=`select v.id_video,v.nombre_video,v.fecha,v.hora,concat(v.fecha,' ',v.hora) fecha_hora,pc.id_personal,u.nombres_apellidos,'Streaming' source from ${sc}video v inner join ${sc}personal_campo pc on v.id_personal=pc.id_personal `+
+		//`inner join ${sc}usuario u on pc.id_usuario=u.id_usuario `;
         if(fecha_inicial&&fecha_final&&hora&&sereno){
-            query+=`where v.fecha>=$1 and v.fecha<=$2 and v.hora >= $3 and v.id_personal=$4`;
+			query+=`where v.fecha>=$1 and v.fecha<=$2 and v.hora >= $3 and v.id_personal=$4`;
+			query1+=` and i.fecha>=$1 and i.fecha<=$2 and i.hora >= $3 and p.id_personal=$4`;
+			query2+=` and ai.fecha>=$1 and ai.fecha<=$2 and ai.hora>=$3 and i.id_sereno_asignado=$4`;
             options=[fecha_inicial,fecha_final,hora,sereno];
         }else if(fecha_inicial&&fecha_final&&hora){
-            query+=`where v.fecha>=$1 and v.fecha<=$2 and v.hora >= $3`;
+			query+=`where v.fecha>=$1 and v.fecha<=$2 and v.hora >= $3`;
+			query1+=` and i.fecha>=$1 and i.fecha<=$2 and i.hora >= $3`;
+			query2+=` and ai.fecha>=$1 and ai.fecha<=$2 and ai.hora>=$3`;
             options=[fecha_inicial,fecha_final,hora];
         }else if(fecha_inicial&&fecha_final&&sereno){
-            query+=`where v.fecha>=$1 and v.fecha<=$2 and v.id_personal=$3`;
+			query+=`where v.fecha>=$1 and v.fecha<=$2 and v.id_personal=$3`;
+			query1+=` and i.fecha>=$1 and i.fecha<=$2 and p.id_personal=$3`;
+			query2+=` and ai.fecha>=$1 and ai.fecha<=$2 and i.id_sereno_asignado=$3`;
             options=[fecha_inicial,fecha_final,sereno];
         }else if(fecha_inicial&&fecha_final){
-            query+=`where v.fecha>=$1 and v.fecha<=$2`;
+			query+=`where v.fecha>=$1 and v.fecha<=$2`;
+			query1+=` and i.fecha>=$1 and i.fecha<=$2`;
+			query2+=` and ai.fecha>=$1 and ai.fecha<=$2`;
             options=[fecha_inicial,fecha_final];
         }
         else if(hora&&sereno){
-            query+=`where v.hora>=$1 and v.id_personal=$2`;
+			query+=`where v.hora>=$1 and v.id_personal=$2`;
+			query1+=` and i.hora >= $1 and p.id_personal=$2`;
+			query2+=` and ai.hora>=$1 and i.id_sereno_asignado=$2`;
             options=[hora,sereno];
         }else if(hora){
-            query+=`where v.hora>=$1`;
+			query+=`where v.hora>=$1`;
+			query1+=` and i.hora >= $1`;
+			query2+=` and ai.hora>=$1`;
             options=[hora];
         }else if(sereno){
-            query+=`where v.id_personal=$1`;
+			query+=`where v.id_personal=$1`;
+			query1+=` and p.id_personal=$1`;
+			query2+=` and i.id_sereno_asignado=$1`;
             options=[sereno];
-        }
-        query +=` order by 1 desc`;
-		console.log(query);
-		const queryResult = await pool.query(query,options);
+        } 
+		let finalQuery='';
+		if(inc&&vid&&evi){
+			finalQuery=`${query} union(${query1}) union(${query2}) `;
+		}else if(inc&&vid){
+			finalQuery=`${query} union(${query1}) `;
+		}else if(inc&&evi){
+			finalQuery =`${query1} union(${query2}) `;
+		}else if(vid&&evi){
+			finalQuery=`${query} union(${query2})`;
+		}else if(inc){
+			finalQuery=query1;
+		}else if(vid){
+			finalQuery=query;
+			
+		}else if(evi){
+			finalQuery=query2;
+		}else{
+			return undefined;
+		}
+		
+        finalQuery +=` order by 3 desc, 4 desc`;
+		console.log(finalQuery);
+		const queryResult = await pool.query(finalQuery,options);
 		if (queryResult) {
 			const result=queryResult.rows;
 			if (result) {
