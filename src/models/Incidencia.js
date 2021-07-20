@@ -20,7 +20,8 @@ class Incidencia {
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
-		ai.ev_video,ai.ev_audio,ai.ev_image,ai.descripcion a_descripcion
+		ai.ev_video,ai.ev_audio,ai.ev_image,ai.descripcion a_descripcion,
+		i.lat,i.lng 
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
@@ -93,7 +94,8 @@ class Incidencia {
 		i.id_usuario_rep,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
-		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
+		i.lat,i.lng 
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
@@ -130,7 +132,8 @@ class Incidencia {
 		i.id_usuario_rep,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
-		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image
+		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
+		i.lat,i.lng
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
