@@ -32,6 +32,8 @@ app.use('/api/personal-campo',require('./routes/personalcampo.routes'));
 app.use('/api/accion-incidencia',require('./routes/accionincidencia.routes'));
 app.use('/api/tipo-accion',require('./routes/tipoaccion.routes'));
 app.use('/api/video',require('./routes/video.routes'));
+app.use('/api/grupo',require('./routes/grupo.routes'));
+
 app.use('/',swagerUiServe,swaggerUiSetUp);
 
 module.exports= app;

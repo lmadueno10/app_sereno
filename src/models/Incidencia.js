@@ -21,7 +21,7 @@ class Incidencia {
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
 		ai.ev_video,ai.ev_audio,ai.ev_image,ai.descripcion a_descripcion,
-		i.lat,i.lng 
+		i.lat,i.lng,id_grupo_asignado 
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
@@ -95,7 +95,7 @@ class Incidencia {
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
-		i.lat,i.lng 
+		i.lat,i.lng,id_grupo_asignado 
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
@@ -107,6 +107,48 @@ class Incidencia {
 			//LEFT JOIN evidencia e ON i.id_incidencia=e.id_incidencia
 			`WHERE s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' 
 		AND i.id_sereno_asignado =$1 AND i.estado=1 AND i.id_usuario_rep<>$1 
+		union(
+			SELECT 
+
+i.id_incidencia,
+CONCAT(i.fecha,' ',i.hora) fecha_hora,
+i.fecha,
+i.hora,
+i.id_sereno_asignado,
+NULL,
+i.nombre_ciudadano,
+i.telefono_ciudadano,
+s.valor clasificacion,
+s.multitabla_id id_clasificacion ,
+ss.valor tipo,
+ss.multitabla_id id_tipo,
+ssc.valor subtipo,
+ssc.multitabla_id id_subtipo,
+i.interior,i.lote,
+i.referencia,
+i.descripcion,
+i.nro_direccion,
+i.direccion,
+i.estado,
+i.id_usuario_rep,
+null,
+null,
+null,
+i.lat,
+i.lng,
+id_grupo_asignado
+
+
+FROM ${sc}incidencia i 
+INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
+INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 
+LEFT JOIN ${sc}ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id
+
+INNER JOIN ${sc}grupo_sereno gs ON i.id_grupo_asignado=gs.id_grupo
+WHERE 
+s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' AND  
+i.estado=1 AND gs.id_personal=$1 AND NOT  i.id_sereno_asignado =$1
+		)
 		ORDER BY 1 DESC;`
 		const queryResult = await pool.query(query, [id]);
 		if (queryResult) {
@@ -133,7 +175,7 @@ class Incidencia {
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,
 		(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,
-		i.lat,i.lng
+		i.lat,i.lng,id_grupo_asignado
           FROM ${sc}incidencia i 
         INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id 
         INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id 

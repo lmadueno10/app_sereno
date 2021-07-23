@@ -1,59 +1,41 @@
+const GenericController = require('./generic/generic.controller.js');
 /**
- *Class to create generic controller for simple crud
- *@class
-*/
-class GenericController{
-	/**
-	 * @param {object} req HttpRequest Object
-	 * @param {object} res HttpResponse Object
-	 * @param {object} model (Optional)
-	 * @param {String} name (Optional)
-	 * @returns {JSONObject}
-	 */
-	async create(req,res,model){
-		try{
-			console.log(req.body);
-			const resp=await model.create(req.body);
-			if(resp.data){
-				res.status(201).json({code:201,data:resp.data});
-			}else{
-				res.status(200).json({code:400,data:resp.data});
-			}
-			
-		}catch(err){	
-			console.error(err);
-			res.status(500).json({code:500,data:err});
-		}
+ * Class representing Controller.
+ *
+ * @class
+ */
+class GrupoController extends GenericController{
 
-	}
-	/**
+    /**
 	 * @param {object} req HttpRequest Object
 	 * @param {object} res HttpResponse Object
 	 * @param {object} model (Optional)
 	 * @returns {Array<JSONObject>}
 	 */
-	async getAll(req,res,model){
+	 async getPersonalDisponibleByIdgrupo(req,res,model){
+        const {id}=req.params;
 		try{
-			const resp =await model.getAll();
+			const resp =await model.getPersonalDisponibleByIdgrupo(id);
 			if(resp){
 				res.status(200).json({data:resp});
 			}else{
 				res.status(404).json({});
 			}
 		}catch(err){
-
 			res.status(500).json({message:'Internal Error',data:err});
 		}
 	}
-	/**
+
+    /**
 	 * @param {object} req HttpRequest Object
 	 * @param {object} res HttpResponse Object
 	 * @param {object} model (Optional)
-	 * @returns {JSONObject}
+	 * @returns {Array<JSONObject>}
 	 */
-	async getById(req,res,model){
+	 async getPersonalAsignadoByIdgrupo(req,res,model){
+        const {id}=req.params;
 		try{
-			const resp=await model.getById(req.params.id);
+			const resp =await model.getPersonalAsignadoByIdgrupo(id);
 			if(resp){
 				res.status(200).json({data:resp});
 			}else{
@@ -63,17 +45,42 @@ class GenericController{
 			res.status(500).json({message:'Internal Error',data:err});
 		}
 	}
-	/**
+
+    /**
 	 * @param {object} req HttpRequest Object
 	 * @param {object} res HttpResponse Object
 	 * @param {object} model (Optional)
 	 * @param {String} name (Optional)
 	 * @returns {JSONObject}
 	 */
-	async update(req,res,model){
+	async asignarPersonalGrupo(req,res,model){
 		try{
 			console.log(req.body);
-			const resp=await model.update(req.body,req.params.id);
+			const resp=await model.asignarPersonal(req.body);
+			if(resp.data){
+				res.status(201).json({code:201,data:resp.data});
+			}else{
+				res.status(200).json({code:400,data:resp.data});
+			}
+			
+		}catch(err){	
+			console.error(err);
+			res.status(500).json({code:500,data:err});
+		}
+
+	}
+
+    /**
+	 * @param {object} req HttpRequest Object
+	 * @param {object} res HttpResponse Object
+	 * @param {object} model (Optional)
+	 * @param {String} name (Optional)
+	 * @returns {JSONObject}
+	 */
+	async removePersonalGrupo(req,res,model){
+		try{
+			console.log(req.body);
+			const resp=await model.deletePersonalGrupo(req.params.idGrupo,req.params.idPersonal);
 			if(resp.data){
 				res.status(201).json({code:201,data:resp.data});
 			}else{
@@ -85,25 +92,6 @@ class GenericController{
 			res.status(500).json({code:500,data:err});
 		}
 	}
-	/**
-	 * @param {object} req HttpRequest Object
-	 * @param {object} res HttpResponse Object
-	 * @param {object} model (Optional)
-	 * @param {String} name (Optional)
-	 * @returns {Object}
-	 */
-	async delete(req,res,model,name){
-		try{
-			const resp=await model.delete(req.params.id);
-			if(res.data){
-				res.json({message:`${name} Eliminado`,code:200});
-			}else{
-				res.status(204).json({});
-			}
-		}catch(err){
-			res.status(500).json({message:'Internal Error',data:err});
-		}
-	}
 }
 
-module.exports=GenericController;
+module.exports=GrupoController;

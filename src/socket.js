@@ -3,6 +3,7 @@ const app=require('./app');
 app.set('port',process.env.PORT||3000);
 const socketIo =require('socket.io');
 const Incidencia = require('./models/Incidencia');
+const Grupo =require('./models/Grupo');
 let users=[];
 
 const servidor=http.createServer(app);
@@ -50,6 +51,16 @@ io.on('connection',socket=>{
 			const inci=await getCountIncidencias(id_personal);
 			const resp={count:inci,incidencia:inc};
 			io.emit(`usuario_${id_personal}`,resp);
+
+			if(inc.id_grupo_asignado){
+				const lista= await getAllPersonalByGroup(inc.id_grupo_asignado);
+				lista.map(async p=>{
+					const intmp=await getCountIncidencias(p.id_personal);
+					const rp={count:intmp,incidencia:inc};
+					io.emit(`usuario_${p.id_personal}`,rp);
+				})
+			}
+
 		}
 	})
 	socket.on('streaming',async (obj)=>{
@@ -99,4 +110,8 @@ const getCountIncidencias=async (idPersonal)=>{
     return incidencias;
 }
 
+const getAllPersonalByGroup =async (idGrupo)=>{
+	const lista=await Grupo.getPersonalAsignadoByIdgrupo(idGrupo);
+	return lista;
+}
 module.exports=servidor;
