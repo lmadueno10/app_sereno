@@ -215,9 +215,9 @@ i.estado=1 AND gs.id_personal=$1 AND NOT  i.id_sereno_asignado =$1
 		`concat(ae.fecha,' ',ae.hora) fecha_cc,u2.codigo codigo_per_cc,u2.nombres_apellidos nomb_ap_per_cc,`+
 		`u2.dni dni_per_cc,u2.celular celular_per_cc,u3.codigo codigo_usu_reg,u3.nombres_apellidos nomb_ap_usu_reg,`+
 		`u3.dni dni_usu_reg,u3.celular celular_usu_reg,`+
-		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,`+
-		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,`+
-		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,`+
+		`(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,`+
+		`(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,`+
+		`(select e.url_evidencia from ${sc}evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,`+
 		`i.lat,i.lng,id_grupo_asignado `+
 		`FROM ${sc}incidencia i `+
 		`INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id `+
