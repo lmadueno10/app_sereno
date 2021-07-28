@@ -12,6 +12,7 @@
     "ffmpeg": "0.0.4",
     "fs-extra": "^9.1.0",
     "helmet": "^4.4.1",
+    "html-pdf": "^3.0.1",
     "jimp": "^0.16.1",
     "jsdoc": "^3.6.6",
     "jsonwebtoken": "^8.5.1",

@@ -33,6 +33,7 @@ router.get('/',(req,resp)=>ic.getAll(req,resp,Incidencia));
 router.get('/:id',(req,resp)=>ic.getById(req,resp,Incidencia));
 router.get('/sereno/:id',(req,resp)=>ic.getAllIncidenciaByIdPersonal(req,resp,Incidencia));
 router.get('/usuario/:id',(req,resp)=>ic.getAllIncidenciaByIdUsuarioRep(req,resp,Incidencia));
+router.get('/pdf/:id',(req,resp)=>ic.getIncidentByIdIncident(req,resp,Incidencia));
 router.get('/dashboard/count',(req,resp)=>ic.getDataDashboard(req,resp,Incidencia));
 router.post('/',[signVideo],(req,resp)=>ic.create(req,resp,Incidencia,));
 router.post('/sereno',[signVideo],(req,res)=>ec.create(req,res));

@@ -202,6 +202,59 @@ i.estado=1 AND gs.id_personal=$1 AND NOT  i.id_sereno_asignado =$1
 	 * @param {Number} id Number
 	 * @returns {JSONObject}
 	 */
+	 static async getIncidentByIdIncident(id) {
+		const query = `SELECT  i.id_incidencia,CONCAT(i.fecha,' ',i.hora) fecha_hora_reg_inc,`+
+		`i.fecha,i.hora,i.id_sereno_asignado,u.nombres_apellidos,u.codigo,u.celular,u.dni,`+
+		`i.nombre_ciudadano,ae.ev_video,ae.ev_audio,ae.ev_image,`+
+		`i.telefono_ciudadano,s.valor clasificacion,s.multitabla_id id_clasificacion , ss.valor tipo,`+
+		`ss.multitabla_id id_tipo,ssc.valor subtipo,ssc.multitabla_id id_subtipo,`+
+		`i.interior,i.lote,i.referencia,i.descripcion,i.nro_direccion,i.direccion,i.estado,`+
+		`i.id_usuario_rep,u4.codigo codigo_perso_rep,u4.nombres_apellidos nomb_ap_perso_rep,`+
+		`u4.dni dni_perso_rep,u4.celular celular_perso_rep,u1.codigo codigo_usu_grup,`+
+		`u1.nombres_apellidos nomb_ap_usu_grup,u1.dni dni_usu_grup,u1.celular celular_usu_grup,`+
+		`concat(ae.fecha,' ',ae.hora) fecha_cc,u2.codigo codigo_per_cc,u2.nombres_apellidos nomb_ap_per_cc,`+
+		`u2.dni dni_per_cc,u2.celular celular_per_cc,u3.codigo codigo_usu_reg,u3.nombres_apellidos nomb_ap_usu_reg,`+
+		`u3.dni dni_usu_reg,u3.celular celular_usu_reg,`+
+		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='video') video,`+
+		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='audio') audio,`+
+		`(select e.url_evidencia from evidencia e where e.id_incidencia=i.id_incidencia and e.tipo='image') image,`+
+		`i.lat,i.lng,id_grupo_asignado `+
+		`FROM ${sc}incidencia i `+
+		`INNER JOIN ${sc}ssc_multitabla s ON i.id_clasificacion = s.multitabla_id `+
+		`INNER JOIN ${sc}ssc_multitabla ss ON i.id_tipo = ss.multitabla_id `+
+		`LEFT JOIN ${sc}ssc_multitabla ssc ON i.id_subtipo = ssc.multitabla_id `+
+		`LEFT JOIN ${sc}personal_campo p ON p.id_personal = i.id_sereno_asignado `+
+		`LEFT JOIN ${sc}usuario u ON u.id_usuario = p.id_usuario `+
+		`LEFT JOIN ${sc}grupo_sereno gs ON i.id_grupo_asignado=gs.id_grupo `+
+		`LEFT JOIN ${sc}personal_campo pc1 ON gs.id_personal=pc1.id_personal `+
+		`LEFT JOIN ${sc}usuario u1 ON pc1.id_usuario=u1.id_usuario `+
+		`LEFT JOIN ${sc}accion_incidencia ae ON i.id_incidencia=ae.id_incidencia `+
+		`LEFT JOIN ${sc}personal_campo pc2 ON ae.id_personal_cc=pc2.id_personal `+
+		`LEFT JOIN ${sc}usuario u2 ON pc2.id_usuario=u2.id_usuario `+
+		`LEFT JOIN ${sc}usuario u3 ON i.id_usuario=u3.id_usuario `+
+		`LEFT JOIN ${sc}personal_campo pc3 ON i.id_usuario_rep=pc3.id_personal `+
+		`LEFT JOIN ${sc}usuario u4 ON pc3.id_usuario=u4.id_usuario `+
+		`WHERE s.tabla='ssc_clasificacion_inc' AND ss.tabla='ssc_tipo_inc' `+
+		`AND i.id_incidencia =$1 `;
+		const queryResult = await pool.query(query, [id]);
+		if (queryResult) {
+			const result = queryResult.rows;
+			if (result) {
+				return result;
+			} else {
+				return undefined;
+			}
+		} else {
+			return undefined;
+		}
+	}
+
+
+
+	/**
+	 * @param {Number} id Number
+	 * @returns {JSONObject}
+	 */
 	static async getCountIncidenciasByIdSerenoAsignado(id) {
 		const query = `SELECT count(*) FROM ${sc}incidencia i ` +
 			`WHERE i.id_sereno_asignado =$1 AND i.estado=1 AND  i.id_usuario_rep<>$1;`;
