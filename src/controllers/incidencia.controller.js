@@ -39,7 +39,7 @@ class IncidenciaController extends GenericController{
 			try{
 				const resp =await model.getIncidentByIdIncident(id);
 				const dir=__dirname;
-				let imgPath=path.join(dir,'../public/img/');
+				let imgPath=path.join(dir,'../public/');
 				imgPath=path.normalize(imgPath);
 				const pthArray=imgPath.toString().split("\\");
 				let baseImg=``;
@@ -68,7 +68,11 @@ class IncidenciaController extends GenericController{
 				   };
 
 				pdf.create(template,options).toStream(function(err, stream){
-					stream.pipe(res);
+					if(stream)
+						stream.pipe(res);
+					if(err){
+						console.log(err);
+					}
 				  });
 				/*
 				if(resp){
@@ -309,7 +313,8 @@ class IncidenciaController extends GenericController{
 				<meta charset="UTF-8">
 				<meta http-equiv="X-UA-Compatible" content="IE=edge">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<title>Reporte Incidencia</title>
+				<link rel="stylesheet" href="./css/leaflet.css" />
+    			<script src="./js/leaflet.js"></script>
 				<style>
 					body{
 						margin: 0 auto;
@@ -368,7 +373,7 @@ class IncidenciaController extends GenericController{
 			<body>
 				<div>
 					<main>
-						<img class="brand" src="logo_brand.png" alt="Logo">
+						<img class="brand" src="./img/logo_brand.png" alt="Logo">
 						<footer>
 							<hgroup>
 								<h5>INFORME CIERRE INCIDENCIA</h5>
@@ -520,7 +525,7 @@ class IncidenciaController extends GenericController{
 						</tr>
 						`;
 					}
-					const tmp3=`
+					let tmp3=`
 					<tr>
 						<td colspan="4"><b>ESTADO DE ATENCIÓN DE LA INCIDENCIA</b></td>
 					</tr>
@@ -565,12 +570,27 @@ class IncidenciaController extends GenericController{
 					</tr>
 				</table>
 			</main>
-			<main>
-				<h5><b>GEOREFERENCIACIÓN DE LA INCIDENCIA</b></h5>
-				<h5><b>REGISTRO DE INCIDENCIA</B></h5>
-				<img src="http://localhost:${process.env.PORT}/img/map.jpg" style="width:500px;height:350px;display:block;margin:0 auto"/>
-				<h6 style="text-align:center;margin-top:0"><b>Img 01 Ubicación de la incidencia</b></h6>
-				`;
+			<main>`;
+			if(tmpIncident.lat&&tmpIncident.lng){
+				tmp3+=
+				`
+					<h5><b>GEOREFERENCIACIÓN DE LA INCIDENCIA</b></h5>
+					<h5><b>REGISTRO DE INCIDENCIA</B></h5>
+					<div id="map" style="width:640px;height:360px;margin:0 auto"></div>
+					
+					<script>
+						var map = L.map('map').setView([${tmpIncident.lat},${tmpIncident.lng}], 15,{zoomControl: false});
+	
+						L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+							attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+						}).addTo(map);
+						
+						L.marker([${tmpIncident.lat}, ${tmpIncident.lng}]).addTo(map);
+						map.zoomControl.remove();
+					</script>
+					<h6 style="text-align:center;margin-top:0"><b>Img 01 Ubicación de la incidencia</b></h6>
+					`;
+			}
 			let tmp4=``;
 			if(tmpIncident.image){
 				indexImage++;
