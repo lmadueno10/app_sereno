@@ -18,20 +18,29 @@ class EvidenciaController extends GenericController {
             const incidencia=req.body;
             const files=req.files;
             console.log("FILES:",files);
-            const video =files.video?files.video[0]?files.video[0]:undefined:undefined;
+            let video =files.video?files.video[0]?files.video[0]:undefined:undefined;
             const audio=files.audio?files.audio[0]?files.audio[0]:undefined:undefined;
-            const image=files.image?files.image[0]?files.image[0]:undefined:undefined;
+            let image=files.image?files.image[0]?files.image[0]:undefined:undefined;
+            if(req.body.video){
+                video=req.body.video;
+                delete incidencia.video;
+            }
+            if(req.body.image){
+                image=req.body.image;
+                delete incidencia.image;
+            }
+            console.log(incidencia)
             let objVideo,objAudio,objImage;
             const objinc=await Incidencia.create(incidencia);
             if(objinc.data.id_incidencia){
                 if(video){
-                    objVideo=await Evidencia.create({id_incidencia:objinc.data.id_incidencia,url_evidencia:`evidencia/${video.filename}`,tipo:'video'})
+                    objVideo=await Evidencia.create({id_incidencia:objinc.data.id_incidencia,url_evidencia:video.filename?`evidencia/${video.filename}`:`${video}`,tipo:'video'})
                 }
                 if(audio){
                     objAudio=await Evidencia.create({id_incidencia:objinc.data.id_incidencia,url_evidencia:`evidencia/${audio.filename}`,tipo:'audio'})
                 }
                 if(image){
-                    objImage=await Evidencia.create({id_incidencia:objinc.data.id_incidencia,url_evidencia:`evidencia/${image.filename}`,tipo:'image'})
+                    objImage=await Evidencia.create({id_incidencia:objinc.data.id_incidencia,url_evidencia:image.filename?`evidencia/${image.filename}`:`${image}`,tipo:'image'})
                 }
                 res.status(201).json({incidencia:objinc,video:objVideo,audio:objAudio,image:objImage});
 
