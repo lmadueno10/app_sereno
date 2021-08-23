@@ -2,6 +2,7 @@ const {Router} =require('express');
 const router = Router();
 const GrupoController= require('../controllers/grupo.controller');
 const Grupo = require('../models/Grupo');
+const FtpUtil = require('../utils/ftp.util');
 const gc =new GrupoController();
 
 /**
@@ -24,5 +25,10 @@ router.post('/asignar',(req,resp)=>gc.asignarPersonalGrupo(req,resp,Grupo,));
 router.put('/:id',(req,resp)=>gc.update(req,resp,Grupo));
 router.delete('/:id',(req,res)=>gc.delete(req,res,Grupo));
 router.delete('/remover/:idGrupo/:idPersonal',(req,res)=>gc.removePersonalGrupo(req,res,Grupo));
+router.post('/ftp',(req,resp)=>{
+    const name=req.body.name;
+    const fecha=req.body.fecha;
+    FtpUtil.onTranferVideoComplete(name,fecha,resp)
+})
 
 module.exports=router;

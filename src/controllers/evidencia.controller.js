@@ -41,6 +41,7 @@ class EvidenciaController extends GenericController {
             if (video) {
                 objVideo = await Evidencia.create({ id_incidencia: objinc.data.id_incidencia, url_evidencia: video.filename ? `evidencia/${video.filename}` : `${video}`, tipo: 'video' })
                 if (!video.filename) {
+                    /*
                     const re=setTimeout(async ()=>{
                         const listaVideo=video.split("|");
                         listaVideo.map(async v=>{
@@ -50,6 +51,7 @@ class EvidenciaController extends GenericController {
                         })
                         
                     },1000*60*5);
+                    */
                 }
             }
             if (audio) {

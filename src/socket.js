@@ -4,6 +4,7 @@ app.set('port',process.env.PORT||3000);
 const socketIo =require('socket.io');
 const Incidencia = require('./models/Incidencia');
 const Grupo =require('./models/Grupo');
+const FtpUtil = require('./utils/ftp.util');
 let users=[];
 
 const servidor=http.createServer(app);
@@ -101,6 +102,22 @@ io.on('connection',socket=>{
 			io.emit(`streaming_off`,resp);
 		}
 	})
+	socket.on("ftp_complete",data=>{
+		try{
+		console.log("ftp complete")
+		if(data){
+			if(data.fileName){
+				console.log(data.fileName+" subido por ftp.")
+				const ext=data.fileName.split(".")[1].toLowerCase();
+				if(ext!=="jpg"&&ext!=="png"&&ext!=="bmp"&&ext!=="gif"){
+					FtpUtil.onTranferVideoComplete(data.fileName,data.fecha);
+				}
+			}
+		}
+	}catch(err){
+		console.log(err);
+	}
+	});
 });
 
 const getCountIncidencias=async (idPersonal)=>{
