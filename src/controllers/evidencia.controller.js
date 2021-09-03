@@ -13,6 +13,10 @@ const ffmpeg = require('ffmpeg');
  */
 class EvidenciaController extends GenericController {
 
+    async uploadEvidencia(req,res){
+        res.status(201).json({status:"ok"});
+    }
+
     /**
      * @param {object} req HttpRequest Object
      * @param {object} res HttpResponse Object

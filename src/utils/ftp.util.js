@@ -42,6 +42,47 @@ class FtpUtil{
         });  
     }
 
+    static async  singVideoFromPostRequest(fileName, fecha,idPersonal,resp){
+        let fechaBar;
+        if(fecha){
+            fechaBar= new Date(fecha);
+        }else{
+            fechaBar= new Date();
+        }
+        const basePath= path.join(__dirname,'../public/evidencia');
+        const finalName=path.join(basePath,fileName);
+        const realName=path.join(basePath,'temp',fileName.replace(`${idPersonal}_`,''));
+        const videoNameTemp='/temp/'+'temp_'+fileName.replace(`${idPersonal}_`,"");
+        const pathVideoNameTemp=path.join(basePath,videoNameTemp);
+        const pathFont=path.join(__dirname,'sans.otf');
+        const pathImage=path.join(basePath,'temp','bar.png');
+        let font=pathFont.replace(/\\/g,"/");
+        font =font.replace(":","\\:");
+        console.log(font);
+        console.log("Procesando video...");
+        //await fs.rename(realName,pathVideoNameTemp);
+        const command1 =`ffmpeg -i ${realName} -i ${pathImage} -filter_complex "overlay=(main_w-overlay_w):(main_h-overlay_h)-20" -vcodec libx264 ${pathVideoNameTemp}`;
+        exec(command1,(err)=>{
+            if(err){
+                console.log("Ocurrio un error al crear caja texto",err);
+            }else{
+                fs.unlink(realName);
+                const command=`ffmpeg -y -i ${pathVideoNameTemp} -vf drawtext="fontfile='${font}': \\text='Registrado por el Software SGIE el ${this.getDateString(fechaBar)}': fontcolor=white: fontsize=15: box=1:  boxcolor=black: \\boxborderw=1: x=(w-text_w): y=(h-text_h)-26" -codec:a copy ${finalName}`;
+                console.log("Firmando video...")
+                exec(command,(err1)=>{
+                    if(err1){
+                        console.log("Ocurrio un error al firmar video",err1);
+                    }else{
+                        fs.unlink(pathVideoNameTemp);
+                        console.log(`${fileName} firmado.`)
+                        if(resp)
+                            resp.json({"status":"video was signed"});
+                    }
+                })
+            }
+        });  
+    }
+
     static getDateString(fecha) {
 
         const horas = fecha.getHours();

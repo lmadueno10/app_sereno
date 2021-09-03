@@ -17,7 +17,7 @@ const storage=multer.diskStorage({
         callback(null,new Date().getTime()+path.extname(file.originalname));
     }
 });
-app.use(multer({storage}).fields([{name:'video',maxCount:1},{name:'audio',maxCount:1},{name:'image',maxCount:1}]));
+app.use(multer({storage}).fields([{name:'video',maxCount:1},{name:'audio',maxCount:1},{name:'image',maxCount:1},{name:'fileZip',maxCount:1}]));
 app.use(cors());
 app.use(express.static(path.join(__dirname,'public')));
 

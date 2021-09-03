@@ -4,6 +4,7 @@ const IncidenciaController = require('../controllers/incidencia.controller');
 const Incidencia = require('../models/Incidencia');
 const EvidenciaController = require('../controllers/evidencia.controller');
 const signVideo = require('../middlewares/signVideo');
+const unzipFiles = require('../middlewares/unzipFiles');
 const ic =new IncidenciaController();
 const ec = new EvidenciaController();
 
@@ -37,6 +38,7 @@ router.get('/pdf/:id',(req,resp)=>ic.getIncidentByIdIncident(req,resp,Incidencia
 router.get('/dashboard/count',(req,resp)=>ic.getDataDashboard(req,resp,Incidencia));
 router.post('/',[signVideo],(req,resp)=>ic.create(req,resp,Incidencia,));
 router.post('/sereno',[signVideo],(req,res)=>ec.create(req,res));
+router.post('/evidencia',[unzipFiles],(req,resp)=>ec.uploadEvidencia(req,resp));
 router.put('/:id',(req,resp)=>ic.update(req,resp,Incidencia));
 router.delete('/:id',(req,res)=>ic.delete(req,res,Incidencia));
 
