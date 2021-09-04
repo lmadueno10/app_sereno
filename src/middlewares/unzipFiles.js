@@ -17,7 +17,8 @@ const unzipFiles=async (req,res,next)=>{
             console.log("FILE ZIP ",file);
             console.log("FECHA_HORA:",fecha,hora);
             console.log("FILES_NAMES",imageNames,videoNames);
-            const listVideoNames=videoNames.split("|");
+            const listVideoNames=videoNames?videoNames.split("|"):[];
+            const listaImageNames=imageNames?imageNames.split("|"):[];
             const destinationPath=path.join(__dirname,'../public','evidencia','temp/');
             console.log("Extraenedo archivos.")
             const command1 =`"%ProgramFiles%\\WinRAR\\winrar.exe" x -ibck ${file.path} *.* ${destinationPath} -y`;
@@ -25,11 +26,28 @@ const unzipFiles=async (req,res,next)=>{
                 if(err){
                     console.log("Ocurrio un error al Extraer archivos",err);
                 }else{
-                    console.log("Archivos extraidos");
-                    listVideoNames.forEach(video=>{
-                        if(video)
-                            FtpUtil.singVideoFromPostRequest(video,`${fecha} ${hora}`,idPersonal);
-                    })
+                    //console.log("Archivos extraidos");
+                    if(listVideoNames.length>0)
+                        listVideoNames.forEach(video=>{
+                            if(video)
+                                FtpUtil.singVideoFromPostRequest(video,`${fecha} ${hora}`,idPersonal);
+                        });
+                    if(listaImageNames.length>0){
+                        listaImageNames.forEach(image=>{
+                            if(image){
+                                const pathOrigen=path.join(__dirname,'../public','evidencia','temp');
+                                const pathDestino=path.join(__dirname,'../public','evidencia');
+                                const tempName=image.replace(`${idPersonal}_`,'');
+                                console.log("tempName",tempName);
+                                fs.rename(path.join(pathOrigen,tempName),path.join(path.join(pathDestino,image)),(err)=>{
+                                    if(err){
+                                        console.log(err);
+                                    }
+                                    console.log(image,'descomprimido');
+                                });
+                            }
+                        })
+                    }
                 }
             });  
 
